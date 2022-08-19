@@ -221,10 +221,7 @@ static int xwii_iface_read_nodes(struct xwii_iface *dev)
 	 * skipped.
 	 * For other subsystems we simply cache the attribute paths. */
 	prev_if = -1;
-	for (list = udev_enumerate_get_list_entry(e);
-	     list;
-	     list = udev_list_entry_get_next(list), udev_device_unref(d)) {
-
+	for (list = udev_enumerate_get_list_entry(e); list; list = udev_list_entry_get_next(list), udev_device_unref(d)) {
 		tif = prev_if;
 		prev_if = -1;
 
@@ -252,13 +249,11 @@ static int xwii_iface_read_nodes(struct xwii_iface *dev)
 				if (!node)
 					continue;
 
-				if (dev->ifs[tif].node &&
-				    !strcmp(node, dev->ifs[tif].node)) {
+				if (dev->ifs[tif].node && !strcmp(node, dev->ifs[tif].node)) {
 					dev->ifs[tif].available = 1;
 					continue;
 				} else if (dev->ifs[tif].node) {
-					xwii_iface_close(dev,
-							 if_to_iface(tif));
+					xwii_iface_close(dev, if_to_iface(tif));
 					free(dev->ifs[tif].node);
 					dev->ifs[tif].node = NULL;
 				}
@@ -286,15 +281,13 @@ static int xwii_iface_read_nodes(struct xwii_iface *dev)
 			if (dev->led_attrs[i])
 				continue;
 
-			ret = asprintf(&dev->led_attrs[i], "%s/%s",
-				       name, "brightness");
+			ret = asprintf(&dev->led_attrs[i], "%s/%s", name, "brightness");
 			if (ret <= 0)
 				dev->led_attrs[i] = NULL;
 		} else if (!strcmp(subs, "power_supply")) {
 			if (dev->battery_attr)
 				continue;
-			ret = asprintf(&dev->battery_attr, "%s/%s",
-				       name, "capacity");
+			ret = asprintf(&dev->battery_attr, "%s/%s", name, "capacity");
 			if (ret <= 0)
 				dev->battery_attr = NULL;
 		}
@@ -346,7 +339,7 @@ int xwii_iface_new(struct xwii_iface **dev, const char *syspath)
 	d->rumble_id = -1;
 	d->rumble_fd = -1;
 	for (int i = 0; i < 4; ++i)
-		d->ir_cache[i] = (struct xwii_event_abs){.x = 1023, .y = 1023};
+		d->ir_cache[i] = (struct xwii_event_abs){ .x = 1023, .y = 1023 };
 
 	for (i = 0; i < XWII_IF_NUM; ++i)
 		d->ifs[i].fd = -1;
@@ -371,8 +364,7 @@ int xwii_iface_new(struct xwii_iface **dev, const char *syspath)
 
 	driver = udev_device_get_driver(d->dev);
 	subs = udev_device_get_subsystem(d->dev);
-	if (!driver || strcmp(driver, "wiimote") ||
-	    !subs || strcmp(subs, "hid")) {
+	if (!driver || strcmp(driver, "wiimote") || !subs || strcmp(subs, "hid")) {
 		ret = -ENODEV;
 		goto err_dev;
 	}
@@ -493,15 +485,13 @@ int xwii_iface_watch(struct xwii_iface *dev, bool watch)
 	if (!dev->umon)
 		return -ENOMEM;
 
-	ret = udev_monitor_filter_add_match_subsystem_devtype(dev->umon,
-							      "input", NULL);
+	ret = udev_monitor_filter_add_match_subsystem_devtype(dev->umon, "input", NULL);
 	if (ret) {
 		ret = -errno;
 		goto err_mon;
 	}
 
-	ret = udev_monitor_filter_add_match_subsystem_devtype(dev->umon,
-							      "hid", NULL);
+	ret = udev_monitor_filter_add_match_subsystem_devtype(dev->umon, "hid", NULL);
 	if (ret) {
 		ret = -errno;
 		goto err_mon;
@@ -546,8 +536,7 @@ err_mon:
 	return ret;
 }
 
-static int xwii_iface_open_if(struct xwii_iface *dev, unsigned int tif,
-			      bool wr)
+static int xwii_iface_open_if(struct xwii_iface *dev, unsigned int tif, bool wr)
 {
 	char name[256];
 	struct epoll_event ep;
@@ -629,8 +618,7 @@ int xwii_iface_open(struct xwii_iface *dev, unsigned int ifaces)
 		ret = xwii_iface_open_if(dev, XWII_IF_CORE, wr);
 		if (!ret) {
 			dev->ifaces |= XWII_IFACE_CORE;
-			xwii_iface_upload_rumble(dev,
-						 dev->ifs[XWII_IF_CORE].fd);
+			xwii_iface_upload_rumble(dev, dev->ifs[XWII_IF_CORE].fd);
 		} else {
 			err = ret;
 		}
@@ -688,8 +676,7 @@ int xwii_iface_open(struct xwii_iface *dev, unsigned int ifaces)
 		ret = xwii_iface_open_if(dev, XWII_IF_PRO_CONTROLLER, wr);
 		if (!ret) {
 			dev->ifaces |= XWII_IFACE_PRO_CONTROLLER;
-			xwii_iface_upload_rumble(dev,
-						 dev->ifs[XWII_IF_PRO_CONTROLLER].fd);
+			xwii_iface_upload_rumble(dev, dev->ifs[XWII_IF_PRO_CONTROLLER].fd);
 		} else {
 			err = ret;
 		}
@@ -791,8 +778,7 @@ unsigned int xwii_iface_available(struct xwii_iface *dev)
 	return ifs;
 }
 
-static int read_umon(struct xwii_iface *dev, struct epoll_event *ep,
-		     struct xwii_event *ev)
+static int read_umon(struct xwii_iface *dev, struct epoll_event *ep, struct xwii_event *ev)
 {
 	struct udev_device *ndev, *p;
 	const char *act, *path, *npath, *ppath, *node;
@@ -821,16 +807,13 @@ static int read_umon(struct xwii_iface *dev, struct epoll_event *ep,
 			act = udev_device_get_action(ndev);
 			npath = udev_device_get_syspath(ndev);
 			node = udev_device_get_devnode(ndev);
-			p = udev_device_get_parent_with_subsystem_devtype(ndev,
-								"hid", NULL);
+			p = udev_device_get_parent_with_subsystem_devtype(ndev, "hid", NULL);
 			if (p)
 				ppath = udev_device_get_syspath(p);
 
-			if (act && !strcmp(act, "change") &&
-			    !strcmp(path, npath))
+			if (act && !strcmp(act, "change") && !strcmp(path, npath))
 				hotplug = true;
-			else if (act && !strcmp(act, "remove") &&
-				 !strcmp(path, npath))
+			else if (act && !strcmp(act, "remove") && !strcmp(path, npath))
 				remove = true;
 			else if (!node && p && !strcmp(ppath, path))
 				hotplug = true;
@@ -1076,12 +1059,9 @@ try_again:
 		ev->v.abs[0].x = dev->mp_cache.x - dev->mp_normalizer.x / 100;
 		ev->v.abs[0].y = dev->mp_cache.y - dev->mp_normalizer.y / 100;
 		ev->v.abs[0].z = dev->mp_cache.z - dev->mp_normalizer.z / 100;
-		dev->mp_normalizer.x += dev->mp_normalize_factor *
-					((ev->v.abs[0].x > 0) ? 1 : -1);
-		dev->mp_normalizer.y += dev->mp_normalize_factor *
-					((ev->v.abs[0].y > 0) ? 1 : -1);
-		dev->mp_normalizer.z += dev->mp_normalize_factor *
-					((ev->v.abs[0].z > 0) ? 1 : -1);
+		dev->mp_normalizer.x += dev->mp_normalize_factor * ((ev->v.abs[0].x > 0) ? 1 : -1);
+		dev->mp_normalizer.y += dev->mp_normalize_factor * ((ev->v.abs[0].y > 0) ? 1 : -1);
+		dev->mp_normalizer.z += dev->mp_normalize_factor * ((ev->v.abs[0].z > 0) ? 1 : -1);
 
 		ev->type = XWII_EVENT_MOTION_PLUS;
 		return 0;
@@ -1137,8 +1117,8 @@ try_again:
 			default:
 				goto try_again;
 		}
-	    
-	    EV_SYN_KEY = true;
+
+		EV_SYN_KEY = true;
 		memset(ev, 0, sizeof(*ev));
 		memcpy(&ev->time.tv_sec, &input.input_event_sec, sizeof(struct timeval));
 		memcpy(&ev->time.tv_usec, &input.input_event_usec, sizeof(struct timeval));
@@ -1158,15 +1138,14 @@ try_again:
 		else if (input.code == ABS_RZ)
 			dev->nunchuk_cache[1].z = input.value;
 	} else if (input.type == EV_SYN) {
-	    if(EV_SYN_KEY) {
-	        EV_SYN_KEY = false;
-	        goto try_again;
-	    }
+		if (EV_SYN_KEY) {
+			EV_SYN_KEY = false;
+			goto try_again;
+		}
 		memset(ev, 0, sizeof(*ev));
 		memcpy(&ev->time.tv_sec, &input.input_event_sec, sizeof(struct timeval));
 		memcpy(&ev->time.tv_usec, &input.input_event_usec, sizeof(struct timeval));
-		memcpy(&ev->v.abs, dev->nunchuk_cache,
-		       sizeof(dev->nunchuk_cache));
+		memcpy(&ev->v.abs, dev->nunchuk_cache, sizeof(dev->nunchuk_cache));
 		ev->type = XWII_EVENT_NUNCHUK_MOVE;
 		return 0;
 	} else {
@@ -1181,7 +1160,7 @@ static int read_classic(struct xwii_iface *dev, struct xwii_event *ev)
 	struct input_event input;
 	unsigned int key;
 	static bool EV_SYN_KEY = false;
-	
+
 	fd = dev->ifs[XWII_IF_CLASSIC_CONTROLLER].fd;
 	if (fd < 0)
 		return -EAGAIN;
@@ -1251,8 +1230,8 @@ try_again:
 			default:
 				goto try_again;
 		}
-	    
-	    EV_SYN_KEY = true;
+
+		EV_SYN_KEY = true;
 		memset(ev, 0, sizeof(*ev));
 		memcpy(&ev->time.tv_sec, &input.input_event_sec, sizeof(struct timeval));
 		memcpy(&ev->time.tv_usec, &input.input_event_usec, sizeof(struct timeval));
@@ -1274,15 +1253,14 @@ try_again:
 		else if (input.code == ABS_HAT3Y)
 			dev->classic_cache[2].x = input.value;
 	} else if (input.type == EV_SYN) {
-	    if(EV_SYN_KEY) {
-	        EV_SYN_KEY = false;
-	        goto try_again;
-	    }
+		if (EV_SYN_KEY) {
+			EV_SYN_KEY = false;
+			goto try_again;
+		}
 		memset(ev, 0, sizeof(*ev));
 		memcpy(&ev->time.tv_sec, &input.input_event_sec, sizeof(struct timeval));
 		memcpy(&ev->time.tv_usec, &input.input_event_usec, sizeof(struct timeval));
-		memcpy(&ev->v.abs, dev->classic_cache,
-		       sizeof(dev->classic_cache));
+		memcpy(&ev->v.abs, dev->classic_cache, sizeof(dev->classic_cache));
 		ev->type = XWII_EVENT_CLASSIC_CONTROLLER_MOVE;
 		return 0;
 	} else {
@@ -1297,7 +1275,7 @@ static int read_bboard(struct xwii_iface *dev, struct xwii_event *ev)
 	struct input_event input;
 	unsigned int key;
 	static bool EV_SYN_KEY = false;
-	
+
 	fd = dev->ifs[XWII_IF_BALANCE_BOARD].fd;
 	if (fd < 0)
 		return -EAGAIN;
@@ -1319,8 +1297,8 @@ try_again:
 			goto try_again;
 
 		key = XWII_KEY_A;
-	    
-	    EV_SYN_KEY = true;
+
+		EV_SYN_KEY = true;
 		memset(ev, 0, sizeof(*ev));
 		memcpy(&ev->time, &input.time, sizeof(struct timeval));
 		ev->type = XWII_EVENT_BALANCE_BOARD_KEY;
@@ -1337,21 +1315,20 @@ try_again:
 		else if (input.code == ABS_HAT1Y)
 			dev->bboard_cache[3].x = input.value;
 	} else if (input.type == EV_SYN) {
-	    if(EV_SYN_KEY) {
-	        EV_SYN_KEY = false;
-	        goto try_again;
-	    }
-	    
+		if (EV_SYN_KEY) {
+			EV_SYN_KEY = false;
+			goto try_again;
+		}
+
 		memset(ev, 0, sizeof(*ev));
 		memcpy(&ev->time.tv_sec, &input.input_event_sec, sizeof(struct timeval));
 		memcpy(&ev->time.tv_usec, &input.input_event_usec, sizeof(struct timeval));
-		memcpy(&ev->v.abs, dev->bboard_cache,
-		       sizeof(dev->bboard_cache));
+		memcpy(&ev->v.abs, dev->bboard_cache, sizeof(dev->bboard_cache));
 		ev->type = XWII_EVENT_BALANCE_BOARD;
 		return 0;
 	} else {
 	}
-	
+
 	goto try_again;
 }
 
@@ -1461,8 +1438,8 @@ try_again:
 			default:
 				goto try_again;
 		}
-	    
-	    EV_SYN_KEY = true;
+
+		EV_SYN_KEY = true;
 		memset(ev, 0, sizeof(*ev));
 		memcpy(&ev->time.tv_sec, &input.input_event_sec, sizeof(struct timeval));
 		memcpy(&ev->time.tv_usec, &input.input_event_usec, sizeof(struct timeval));
@@ -1480,16 +1457,15 @@ try_again:
 		else if (input.code == ABS_RY)
 			dev->pro_cache[1].y = input.value;
 	} else if (input.type == EV_SYN) {
-	    if(EV_SYN_KEY) {
-	        EV_SYN_KEY = false;
-	        goto try_again;
-	    }
-	    
+		if (EV_SYN_KEY) {
+			EV_SYN_KEY = false;
+			goto try_again;
+		}
+
 		memset(ev, 0, sizeof(*ev));
 		memcpy(&ev->time.tv_sec, &input.input_event_sec, sizeof(struct timeval));
 		memcpy(&ev->time.tv_usec, &input.input_event_usec, sizeof(struct timeval));
-		memcpy(&ev->v.abs, dev->pro_cache,
-		       sizeof(dev->pro_cache));
+		memcpy(&ev->v.abs, dev->pro_cache, sizeof(dev->pro_cache));
 		ev->type = XWII_EVENT_PRO_CONTROLLER_MOVE;
 		return 0;
 	} else {
@@ -1526,17 +1502,17 @@ try_again:
 			goto try_again;
 
 		switch (input.code) {
-		case BTN_START:
-			key = XWII_KEY_PLUS;
-			break;
-		case BTN_SELECT:
-			key = XWII_KEY_MINUS;
-			break;
-		default:
-			goto try_again;
+			case BTN_START:
+				key = XWII_KEY_PLUS;
+				break;
+			case BTN_SELECT:
+				key = XWII_KEY_MINUS;
+				break;
+			default:
+				goto try_again;
 		}
-	    
-	    EV_SYN_KEY = true;
+
+		EV_SYN_KEY = true;
 		memset(ev, 0, sizeof(*ev));
 		memcpy(&ev->time.tv_sec, &input.input_event_sec, sizeof(struct timeval));
 		memcpy(&ev->time.tv_usec, &input.input_event_usec, sizeof(struct timeval));
@@ -1585,16 +1561,15 @@ try_again:
 		else if (input.code == ABS_HI_HAT)
 			dev->drums_cache[XWII_DRUMS_ABS_HI_HAT].x = input.value;
 	} else if (input.type == EV_SYN) {
-	    if(EV_SYN_KEY) {
-	        EV_SYN_KEY = false;
-	        goto try_again;
-	    }
-	    
+		if (EV_SYN_KEY) {
+			EV_SYN_KEY = false;
+			goto try_again;
+		}
+
 		memset(ev, 0, sizeof(*ev));
 		memcpy(&ev->time.tv_sec, &input.input_event_sec, sizeof(struct timeval));
 		memcpy(&ev->time.tv_usec, &input.input_event_usec, sizeof(struct timeval));
-		memcpy(&ev->v.abs, dev->drums_cache,
-		       sizeof(dev->drums_cache));
+		memcpy(&ev->v.abs, dev->drums_cache, sizeof(dev->drums_cache));
 		ev->type = XWII_EVENT_DRUMS_MOVE;
 		return 0;
 	}
@@ -1633,56 +1608,56 @@ try_again:
 #ifndef BTN_FRET_FAR_UP
 #define BTN_FRET_FAR_UP 0x224
 #endif
-		case BTN_FRET_FAR_UP:
-			key = XWII_KEY_FRET_FAR_UP;
-			break;
+			case BTN_FRET_FAR_UP:
+				key = XWII_KEY_FRET_FAR_UP;
+				break;
 #ifndef BTN_FRET_UP
 #define BTN_FRET_UP 0x225
 #endif
-		case BTN_FRET_UP:
-			key = XWII_KEY_FRET_UP;
-			break;
+			case BTN_FRET_UP:
+				key = XWII_KEY_FRET_UP;
+				break;
 #ifndef BTN_FRET_MID
 #define BTN_FRET_MID 0x226
 #endif
-		case BTN_FRET_MID:
-			key = XWII_KEY_FRET_MID;
-			break;
+			case BTN_FRET_MID:
+				key = XWII_KEY_FRET_MID;
+				break;
 #ifndef BTN_FRET_LOW
 #define BTN_FRET_LOW 0x227
 #endif
-		case BTN_FRET_LOW:
-			key = XWII_KEY_FRET_LOW;
-			break;
+			case BTN_FRET_LOW:
+				key = XWII_KEY_FRET_LOW;
+				break;
 #ifndef BTN_FRET_FAR_LOW
 #define BTN_FRET_FAR_LOW 0x228
 #endif
-		case BTN_FRET_FAR_LOW:
-			key = XWII_KEY_FRET_FAR_LOW;
-			break;
+			case BTN_FRET_FAR_LOW:
+				key = XWII_KEY_FRET_FAR_LOW;
+				break;
 #ifndef BTN_STRUM_BAR_UP
 #define BTN_STRUM_BAR_UP 0x229
 #endif
-		case BTN_STRUM_BAR_UP:
-			key = XWII_KEY_STRUM_BAR_UP;
-			break;
+			case BTN_STRUM_BAR_UP:
+				key = XWII_KEY_STRUM_BAR_UP;
+				break;
 #ifndef BTN_STRUM_BAR_DOWN
 #define BTN_STRUM_BAR_DOWN 0x22a
 #endif
-		case BTN_STRUM_BAR_DOWN:
-			key = XWII_KEY_STRUM_BAR_DOWN;
-			break;
-		case BTN_START:
-			key = XWII_KEY_PLUS;
-			break;
-		case BTN_MODE:
-			key = XWII_KEY_HOME;
-			break;
-		default:
-			goto try_again;
+			case BTN_STRUM_BAR_DOWN:
+				key = XWII_KEY_STRUM_BAR_DOWN;
+				break;
+			case BTN_START:
+				key = XWII_KEY_PLUS;
+				break;
+			case BTN_MODE:
+				key = XWII_KEY_HOME;
+				break;
+			default:
+				goto try_again;
 		}
-	    
-	    EV_SYN_KEY = true;
+
+		EV_SYN_KEY = true;
 		memset(ev, 0, sizeof(*ev));
 		memcpy(&ev->time.tv_sec, &input.input_event_sec, sizeof(struct timeval));
 		memcpy(&ev->time.tv_usec, &input.input_event_usec, sizeof(struct timeval));
@@ -1706,16 +1681,15 @@ try_again:
 		else if (input.code == ABS_FRET_BOARD)
 			dev->guitar_cache[2].x = input.value;
 	} else if (input.type == EV_SYN) {
-	    if(EV_SYN_KEY) {
-	        EV_SYN_KEY = false;
-	        goto try_again;
-	    }
-	    
+		if (EV_SYN_KEY) {
+			EV_SYN_KEY = false;
+			goto try_again;
+		}
+
 		memset(ev, 0, sizeof(*ev));
 		memcpy(&ev->time.tv_sec, &input.input_event_sec, sizeof(struct timeval));
 		memcpy(&ev->time.tv_usec, &input.input_event_usec, sizeof(struct timeval));
-		memcpy(&ev->v.abs, dev->guitar_cache,
-		       sizeof(dev->guitar_cache));
+		memcpy(&ev->v.abs, dev->guitar_cache, sizeof(dev->guitar_cache));
 		ev->type = XWII_EVENT_GUITAR_MOVE;
 		return 0;
 	}
@@ -1723,8 +1697,7 @@ try_again:
 	goto try_again;
 }
 
-static int dispatch_event(struct xwii_iface *dev, struct epoll_event *ep,
-			  struct xwii_event *ev)
+static int dispatch_event(struct xwii_iface *dev, struct epoll_event *ep, struct xwii_event *ev)
 {
 	if (dev->umon && ep->data.ptr == dev->umon)
 		return read_umon(dev, ep, ev);
@@ -1806,8 +1779,7 @@ int xwii_iface_poll(struct xwii_iface *dev, struct xwii_event *ev)
 }
 
 XWII__EXPORT
-int xwii_iface_dispatch(struct xwii_iface *dev, struct xwii_event *u_ev,
-			size_t size)
+int xwii_iface_dispatch(struct xwii_iface *dev, struct xwii_event *u_ev, size_t size)
 {
 	struct epoll_event ep[32];
 	int ret, i;
@@ -2010,8 +1982,7 @@ int xwii_iface_get_extension(struct xwii_iface *dev, char **extension)
 }
 
 XWII__EXPORT
-void xwii_iface_set_mp_normalization(struct xwii_iface *dev, int32_t x,
-				     int32_t y, int32_t z, int32_t factor)
+void xwii_iface_set_mp_normalization(struct xwii_iface *dev, int32_t x, int32_t y, int32_t z, int32_t factor)
 {
 	if (!dev)
 		return;
@@ -2023,8 +1994,7 @@ void xwii_iface_set_mp_normalization(struct xwii_iface *dev, int32_t x,
 }
 
 XWII__EXPORT
-void xwii_iface_get_mp_normalization(struct xwii_iface *dev, int32_t *x,
-				     int32_t *y, int32_t *z, int32_t *factor)
+void xwii_iface_get_mp_normalization(struct xwii_iface *dev, int32_t *x, int32_t *y, int32_t *z, int32_t *factor)
 {
 	if (x)
 		*x = dev ? dev->mp_normalizer.x / 100 : 0;

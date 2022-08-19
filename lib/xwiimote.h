@@ -329,29 +329,29 @@ extern "C" {
  * @{
  */
 
-#define XWII__NAME			"Nintendo Wii Remote"
+#define XWII__NAME "Nintendo Wii Remote"
 
 /** Name of the core input device */
-#define XWII_NAME_CORE			XWII__NAME
+#define XWII_NAME_CORE XWII__NAME
 /** Name of the accelerometer input device */
-#define XWII_NAME_ACCEL			XWII__NAME " Accelerometer"
+#define XWII_NAME_ACCEL XWII__NAME " Accelerometer"
 /** Name of the IR input device */
-#define XWII_NAME_IR			XWII__NAME " IR"
+#define XWII_NAME_IR XWII__NAME " IR"
 
 /** Name of the motion-plus input device */
-#define XWII_NAME_MOTION_PLUS		XWII__NAME " Motion Plus"
+#define XWII_NAME_MOTION_PLUS XWII__NAME " Motion Plus"
 /** Name of the nunchuk input device */
-#define XWII_NAME_NUNCHUK		XWII__NAME " Nunchuk"
+#define XWII_NAME_NUNCHUK XWII__NAME " Nunchuk"
 /** Name of the classic-controller input device */
-#define XWII_NAME_CLASSIC_CONTROLLER	XWII__NAME " Classic Controller"
+#define XWII_NAME_CLASSIC_CONTROLLER XWII__NAME " Classic Controller"
 /** Name of the balance-board input device */
-#define XWII_NAME_BALANCE_BOARD		XWII__NAME " Balance Board"
+#define XWII_NAME_BALANCE_BOARD XWII__NAME " Balance Board"
 /** Name of the pro-controller input device */
-#define XWII_NAME_PRO_CONTROLLER	XWII__NAME " Pro Controller"
+#define XWII_NAME_PRO_CONTROLLER XWII__NAME " Pro Controller"
 /** Name of the drums-controller input device */
-#define XWII_NAME_DRUMS			XWII__NAME " Drums"
+#define XWII_NAME_DRUMS XWII__NAME " Drums"
 /** Name of the guitar-controller input device */
-#define XWII_NAME_GUITAR		XWII__NAME " Guitar"
+#define XWII_NAME_GUITAR XWII__NAME " Guitar"
 
 /** @} */
 
@@ -420,8 +420,8 @@ enum xwii_event_types {
 	 * weight-value.
 	 */
 	XWII_EVENT_BALANCE_BOARD,
-    
-    /**
+
+	/**
 	 * Balance-Board key event
 	 *
 	 * Button event of the Balance-Board are reported via this interface
@@ -880,40 +880,33 @@ struct xwii_iface;
  */
 enum xwii_iface_type {
 	/** Core interface */
-	XWII_IFACE_CORE			= 0x000001,
+	XWII_IFACE_CORE = 0x000001,
 	/** Accelerometer interface */
-	XWII_IFACE_ACCEL		= 0x000002,
+	XWII_IFACE_ACCEL = 0x000002,
 	/** IR interface */
-	XWII_IFACE_IR			= 0x000004,
+	XWII_IFACE_IR = 0x000004,
 
 	/** MotionPlus extension interface */
-	XWII_IFACE_MOTION_PLUS		= 0x000100,
+	XWII_IFACE_MOTION_PLUS = 0x000100,
 	/** Nunchuk extension interface */
-	XWII_IFACE_NUNCHUK		= 0x000200,
+	XWII_IFACE_NUNCHUK = 0x000200,
 	/** ClassicController extension interface */
-	XWII_IFACE_CLASSIC_CONTROLLER	= 0x000400,
+	XWII_IFACE_CLASSIC_CONTROLLER = 0x000400,
 	/** BalanceBoard extension interface */
-	XWII_IFACE_BALANCE_BOARD	= 0x000800,
+	XWII_IFACE_BALANCE_BOARD = 0x000800,
 	/** ProController extension interface */
-	XWII_IFACE_PRO_CONTROLLER	= 0x001000,
+	XWII_IFACE_PRO_CONTROLLER = 0x001000,
 	/** Drums extension interface */
-	XWII_IFACE_DRUMS		= 0x002000,
+	XWII_IFACE_DRUMS = 0x002000,
 	/** Guitar extension interface */
-	XWII_IFACE_GUITAR		= 0x004000,
+	XWII_IFACE_GUITAR = 0x004000,
 
 	/** Special flag ORed with all valid interfaces */
-	XWII_IFACE_ALL			= XWII_IFACE_CORE |
-					  XWII_IFACE_ACCEL |
-					  XWII_IFACE_IR |
-					  XWII_IFACE_MOTION_PLUS |
-					  XWII_IFACE_NUNCHUK |
-					  XWII_IFACE_CLASSIC_CONTROLLER |
-					  XWII_IFACE_BALANCE_BOARD |
-					  XWII_IFACE_PRO_CONTROLLER |
-					  XWII_IFACE_DRUMS |
-					  XWII_IFACE_GUITAR,
+	XWII_IFACE_ALL = XWII_IFACE_CORE | XWII_IFACE_ACCEL | XWII_IFACE_IR | XWII_IFACE_MOTION_PLUS | XWII_IFACE_NUNCHUK |
+			 XWII_IFACE_CLASSIC_CONTROLLER | XWII_IFACE_BALANCE_BOARD | XWII_IFACE_PRO_CONTROLLER | XWII_IFACE_DRUMS |
+			 XWII_IFACE_GUITAR,
 	/** Special flag which causes the interfaces to be opened writable */
-	XWII_IFACE_WRITABLE		= 0x010000,
+	XWII_IFACE_WRITABLE = 0x010000,
 };
 
 /**
@@ -947,7 +940,7 @@ enum xwii_led {
  * The argument is a number starting with 1. So XWII_LED([num]) produces the
  * same value as the constant XWII_LED[num] defined in enum xwii_led.
  */
-#define XWII_LED(num) (XWII_LED1 + (num) - 1)
+#define XWII_LED(num) (XWII_LED1 + (num)-1)
 
 /**
  * Create new device object from syspath path
@@ -1146,8 +1139,7 @@ int xwii_iface_poll(struct xwii_iface *dev, struct xwii_event *ev);
  * @returns 0 on success, -EAGAIN if no event can be read and @p ev is non-NULL
  * and a negative error-code on failure
  */
-int xwii_iface_dispatch(struct xwii_iface *dev, struct xwii_event *ev,
-			size_t size);
+int xwii_iface_dispatch(struct xwii_iface *dev, struct xwii_event *ev, size_t size);
 
 /**
  * Toggle rumble motor
@@ -1260,8 +1252,7 @@ int xwii_iface_get_extension(struct xwii_iface *dev, char **extension);
  * input. This is an angoing calibration which modifies the internal state of
  * the x, y and z values.
  */
-void xwii_iface_set_mp_normalization(struct xwii_iface *dev, int32_t x,
-				     int32_t y, int32_t z, int32_t factor);
+void xwii_iface_set_mp_normalization(struct xwii_iface *dev, int32_t x, int32_t y, int32_t z, int32_t factor);
 
 /**
  * Read MP normalization and calibration
@@ -1282,8 +1273,7 @@ void xwii_iface_set_mp_normalization(struct xwii_iface *dev, int32_t x,
  * previously via xwii_iface_set_mp_normalization() and you can feed them back
  * in later.
  */
-void xwii_iface_get_mp_normalization(struct xwii_iface *dev, int32_t *x,
-				     int32_t *y, int32_t *z, int32_t *factor);
+void xwii_iface_get_mp_normalization(struct xwii_iface *dev, int32_t *x, int32_t *y, int32_t *z, int32_t *factor);
 
 /** @} */
 

@@ -52,12 +52,10 @@ struct xwii_monitor *xwii_monitor_new(bool poll, bool direct)
 	entry = udev_enumerate_get_list_entry(enumerate);
 
 	if (poll) {
-		monitor = udev_monitor_new_from_netlink(udev,
-						direct ? "kernel" : "udev");
+		monitor = udev_monitor_new_from_netlink(udev, direct ? "kernel" : "udev");
 		if (!monitor)
 			goto out;
-		if (udev_monitor_filter_add_match_subsystem_devtype(monitor,
-								"hid", NULL))
+		if (udev_monitor_filter_add_match_subsystem_devtype(monitor, "hid", NULL))
 			goto out;
 		if (udev_monitor_enable_receiving(monitor))
 			goto out;
@@ -176,8 +174,7 @@ static char *make_device(struct udev_device *dev)
 
 	driver = udev_device_get_driver(dev);
 	subs = udev_device_get_subsystem(dev);
-	if (!driver || strcmp(driver, "wiimote") ||
-	    !subs || strcmp(subs, "hid"))
+	if (!driver || strcmp(driver, "wiimote") || !subs || strcmp(subs, "hid"))
 		goto out;
 
 	tmp = udev_device_get_syspath(dev);
