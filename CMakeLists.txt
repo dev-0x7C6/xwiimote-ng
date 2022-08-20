@@ -7,14 +7,14 @@ project(
 
 include(GNUInstallDirs)
 
-add_library(xwiimote-ng SHARED lib/core.c lib/monitor.c lib/xwiimote.h)
+add_library(xwiimote-ng SHARED lib/core.c lib/monitor.c lib/xwiimote-ng.h)
 
 target_compile_definitions(
   xwiimote-ng PUBLIC "XWII__EXPORT=__attribute__((visibility(\"default\")))")
 set_target_properties(xwiimote-ng PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties(xwiimote-ng PROPERTIES SOVERSION 3)
 
-set_target_properties(xwiimote-ng PROPERTIES PUBLIC_HEADER lib/xwiimote.h)
+set_target_properties(xwiimote-ng PROPERTIES PUBLIC_HEADER lib/xwiimote-ng.h)
 
 install(
   TARGETS xwiimote-ng

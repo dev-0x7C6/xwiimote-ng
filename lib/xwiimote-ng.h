@@ -1,11 +1,16 @@
 /*
+ * XWiimote-ng - lib
+ * Forked and maitained by Bartłomiej Burdukiewicz <bartlomiej.burdukiewicz@gmail.com>
+ *
+ * Based on original library:
  * XWiimote - lib
  * Written 2010-2013 by David Herrmann <dh.herrmann@gmail.com>
+ *
  * Dedicated to the Public Domain
  */
 
-#ifndef XWII_XWIIMOTE_H
-#define XWII_XWIIMOTE_H
+#ifndef XWII_XWIIMOTE_NG_H
+#define XWII_XWIIMOTE_NG_H
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -1380,4 +1385,4 @@ char *xwii_monitor_poll(struct xwii_monitor *monitor);
 }
 #endif
 
-#endif /* XWII_XWIIMOTE_H */
+#endif /* XWII_XWIIMOTE_NG_H */
