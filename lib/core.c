@@ -19,6 +19,8 @@
 
 #include "xwiimote-ng.h"
 
+#define XWII__EXPORT __attribute__((visibility("default")))
+
 /* interfaces */
 enum xwii_if_base_idx {
 	/* base interfaces */

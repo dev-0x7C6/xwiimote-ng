@@ -8,29 +8,33 @@ project(
 include(GNUInstallDirs)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/modules")
-set(CURSES_NEED_NCURSES TRUE)
-set(CURSES_NEED_WIDE TRUE)
 
-find_package(Curses REQUIRED)
 find_package(UDev REQUIRED)
 
+option(BUILD_XWIIDUMB OFF "Build xwiidump-ng utility")
+option(BUILD_XWIISHOW OFF "Build xwiishow-ng utility")
+
 add_library(xwiimote-ng SHARED lib/core.c lib/monitor.c lib/xwiimote-ng.h)
-
-add_executable(xwiidump-ng tools/xwiidump.c)
-add_executable(xwiishow-ng tools/xwiishow.c)
-target_link_libraries(xwiishow-ng ${CURSES_LIBRARIES} xwiimote-ng -lm)
 target_link_libraries(xwiimote-ng udev)
-
-target_compile_definitions(
-  xwiimote-ng PUBLIC "XWII__EXPORT=__attribute__((visibility(\"default\")))")
-
-target_include_directories(xwiishow-ng PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
 set_target_properties(xwiimote-ng PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties(xwiimote-ng PROPERTIES SOVERSION 3)
 set_target_properties(xwiimote-ng PROPERTIES PUBLIC_HEADER lib/xwiimote-ng.h)
-install(TARGETS xwiidump-ng)
-install(TARGETS xwiishow-ng)
+
+if (BUILD_XWIIDUMB)
+    add_executable(xwiidump-ng tools/xwiidump.c)
+    install(TARGETS xwiidump-ng)
+endif()
+
+if (BUILD_XWIISHOW)
+    set(CURSES_NEED_NCURSES TRUE)
+    set(CURSES_NEED_WIDE TRUE)
+    find_package(Curses REQUIRED)
+    add_executable(xwiishow-ng tools/xwiishow.c)
+    target_include_directories(xwiishow-ng PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/lib)
+    target_link_libraries(xwiishow-ng ${CURSES_LIBRARIES} xwiimote-ng -lm)
+    install(TARGETS xwiishow-ng)
+endif()
 
 install(
   TARGETS xwiimote-ng

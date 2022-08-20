@@ -22,6 +22,8 @@
 
 #include "xwiimote-ng.h"
 
+#define XWII__EXPORT __attribute__((visibility("default")))
+
 struct xwii_monitor {
 	size_t ref;
 	struct udev *udev;
