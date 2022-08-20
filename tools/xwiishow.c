@@ -28,7 +28,8 @@
 #include <sys/time.h>
 #include <time.h>
 #include <unistd.h>
-#include "xwiimote.h"
+
+#include "xwiimote-ng.h"
 
 enum window_mode {
 	MODE_ERROR,
