@@ -1,7 +1,7 @@
-Overview {#mainpage}
+Overview
 ========
 
-xwiimote is an open-source device driver for Nintendo Wii / Wii U remotes. It
+xwiimote-ng is an open-source device driver for Nintendo Wii / Wii U remotes. It
 contains tools and libraries which work together with the official hid-wiimote
 kernel driver, available since linux-3.1.
 
@@ -10,26 +10,28 @@ Nintendo Wii Balance Board, Nintendo Wii U Pro Controller, and more) on your
 linux system, the xwiimote software stack provides everything you need.
 
 This distribution is hosted at:
-  http://dvdhrm.github.io/xwiimote
+  https://github.com/dev-0x7C6/xwiimote-ng
+  
+Based on (forked from):
+  https://github.com/dvdhrm/xwiimote
+
 Use this website to contact the maintainers or developers or to file bug
 reports.
 
 Install
 =======
 
-To install the libxwiimote.so library and the related tools, use:
-	$ ./configure [--enable-debug] [--prefix=/usr]
-	$ make
+To install the libxwiimote-ng.so library and the related tools, use:
+	$ cmake -DCMAKE_INSTALL_PREFIX=/usr .
+	$ make -j$(nproc)
 	$ make install
-If "configure" is not available, use:
-	$ ./autogen.sh [<configure-flags>]
 
 Dependencies:
 	- libudev: Used for device enumeration
 	- ncurses: Used for UI of xwiishow
 
 This software packages contains:
-	libxwiimote.so: A userspace library which helps accessing connected Wii
+	libxwiimote-ng.so: A userspace library which helps accessing connected Wii
 		Remotes in the system. It can be used by applications to use Wii
 		Remotes as input. You can also use the direct kernel interface,
 		though.
@@ -64,12 +66,12 @@ Usage
 =====
 
 Please see the website for help:
-  http://dvdhrm.github.io/xwiimote
+  https://github.com/dev-0x7C6/xwiimote-ng
 
 Documentation
 =============
 
-./doc/website/index.html: Official website of XWiimote and documentation
+./doc/website/index.html: Official website of XWiimote-ng and documentation
 ./doc/*.3: Manpages
 ./doc/DEVICES: Enumeration of all Nintendo Wii / Wii U related devices
 ./doc/DEV_*: Device communication/protocol descriptions
@@ -112,8 +114,8 @@ Contact
 =======
 
 Website:
-  http://dvdhrm.github.io/xwiimote
+  https://github.com/dev-0x7C6/xwiimote-ng
 
 For email contact please see ./COPYING for a list of contributors or
 write an email to the current maintainer at:
-  dh.herrmann@gmail.com
+  bartlomiej.burdukiewicz@gmail.com
