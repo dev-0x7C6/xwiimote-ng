@@ -32,12 +32,6 @@ extern "C" {
  * of the stable ABI and may change at any time.
  */
 
-#if (__GNUC__ > 3)
-#define XWII__DEPRECATED __attribute__((__deprecated__))
-#else
-#define XWII__DEPRECATED
-#endif /* __GNUC__ */
-
 /**
  * @defgroup kernel Kernel ABI
  * Kernel ABI constants
@@ -1088,33 +1082,6 @@ unsigned int xwii_iface_opened(struct xwii_iface *dev);
  * information.
  */
 unsigned int xwii_iface_available(struct xwii_iface *dev);
-
-/**
- * Read incoming event-queue
- *
- * @param[in] dev Valid device object
- * @param[out] ev Pointer where to store a new event or NULL
- *
- * You should call this whenever the file-descriptor returned by
- * xwii_iface_get_fd() is reported as being readable. This function will perform
- * all non-blocking outstanding tasks and then return.
- *
- * This function always performs any background tasks and outgoing event-writes
- * if they don't block. It returns an error if they fail.
- * If @p ev is NULL, this function returns 0 on success after this has been
- * done.
- *
- * If @p ev is non-NULL, this function then tries to read a single incoming
- * event. If no event is available, it returns -EAGAIN and you should watch the
- * file-desciptor again until it is readable. Otherwise, you should call this
- * function in a row as long as it returns 0. It stores the event in @p ev which
- * you can then handle in your application.
- *
- * @returns 0 on success, -EAGAIN if no event can be read and @p ev is non-NULL
- * and a negative error-code on failure
- */
-XWII__DEPRECATED
-int xwii_iface_poll(struct xwii_iface *dev, struct xwii_event *ev);
 
 /**
  * Read incoming event-queue

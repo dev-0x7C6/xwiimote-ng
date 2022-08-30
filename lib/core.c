@@ -1728,59 +1728,6 @@ static int dispatch_event(struct xwii_iface *dev, struct epoll_event *ep, struct
 	return -EAGAIN;
 }
 
-/*
- * Poll for events on device \dev.
- *
- * This function always performs any outstanding I/O. If this fails, an error
- * is returned.
- *
- * If @ev is NULL, nothing else is done and 0 is returned.
- *
- * If @ev is non-NULL, this function reads incoming events from the kernel. If
- * no event is available, -EAGAIN is returned. Otherwise, 0 is returned and a
- * single event is stored in @ev. You should call this function in a row until
- * it returns -EAGAIN to get all events.
- *
- * Once this function returns -EAGAIN, you must watch the descriptor returned
- * by xwii_iface_get_fd() for POLLIN/EPOLLIN/read-events. No other events
- * need to be watched for.
- * Once this fd is readable, you should call xwii_iface_poll() again.
- *
- * If an interface gets closed or some hotplug event is detected, this
- * function returns XWII_EVENT_WATCH. This event does not provide any payload
- * and you need to re-open any interfaces if they got closed.
- */
-XWII__EXPORT
-int xwii_iface_poll(struct xwii_iface *dev, struct xwii_event *ev)
-{
-	struct epoll_event ep[32];
-	int ret, i;
-	size_t siz;
-
-	if (!dev)
-		return -EFAULT;
-
-	/* write outgoing events here */
-
-	if (!ev)
-		return 0;
-
-	siz = sizeof(ep) / sizeof(*ep);
-	ret = epoll_wait(dev->efd, ep, siz, 0);
-	if (ret < 0)
-		return -errno;
-	if (ret > siz)
-		ret = siz;
-
-	for (i = 0; i < ret; ++i) {
-		ret = dispatch_event(dev, &ep[i], ev);
-		if (ret != -EAGAIN)
-			return ret;
-	}
-
-	return -EAGAIN;
-}
-
 XWII__EXPORT
 int xwii_iface_dispatch(struct xwii_iface *dev, struct xwii_event *u_ev, size_t size)
 {
