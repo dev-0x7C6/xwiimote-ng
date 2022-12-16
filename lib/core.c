@@ -811,8 +811,8 @@ static int read_umon(struct xwii_iface *dev, struct epoll_event *ep, struct xwii
 			npath = udev_device_get_syspath(ndev);
 			node = udev_device_get_devnode(ndev);
 			p = udev_device_get_parent_with_subsystem_devtype(ndev, "hid", NULL);
-			if (p)
-				ppath = udev_device_get_syspath(p);
+			/* udev_device_get_syspath returns null if p is null */
+			ppath = udev_device_get_syspath(p);
 
 			if (act && !strcmp(act, "change") && !strcmp(path, npath))
 				hotplug = true;
@@ -1750,7 +1750,7 @@ int xwii_iface_dispatch(struct xwii_iface *dev, struct xwii_event *u_ev, size_t 
 	ret = epoll_wait(dev->efd, ep, siz, 0);
 	if (ret < 0)
 		return -errno;
-	if (ret > siz)
+	if ((unsigned) ret > siz)
 		ret = siz;
 
 	for (i = 0; i < ret; ++i) {

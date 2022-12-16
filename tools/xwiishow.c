@@ -1540,7 +1540,7 @@ static void classic_show_ext(const struct xwii_event *event)
 	if (event->type == XWII_EVENT_CLASSIC_CONTROLLER_KEY) {
 		ev = *event;
 		ev.type = XWII_EVENT_PRO_CONTROLLER_KEY;
-		return pro_show_ext(&ev);
+		pro_show_ext(&ev);
 	}
 
 	/* forward axis events to pro handler... */
@@ -2603,7 +2603,7 @@ static int run_iface(struct xwii_iface *iface)
 	return ret;
 }
 
-static int enumerate()
+static int enumerate(void)
 {
 	struct xwii_monitor *mon;
 	char *ent;
