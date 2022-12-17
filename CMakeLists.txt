@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 
 project(
   xwiimote-ng
-  VERSION 3.0.0
+  VERSION 3.0.1
   DESCRIPTION "xwiimote-ng library")
 
 include(GNUInstallDirs)
